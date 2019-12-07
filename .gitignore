@@ -130,3 +130,9 @@ dmypy.json
 
 # data files
 messages/
+
+#IDE
+.vscode/
+
+# HTML outputs
+*.html
