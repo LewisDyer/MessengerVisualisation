@@ -31,6 +31,10 @@ Various settings are provided in `config.yaml` to change, which are described he
 
 `react_category` - when outputting the graph, only reaction types that are included in this category will be considered. React categories are described in `react-info.json`, and can be modified or added to accordingly (for instance, setting `react_category: love` will combined heart eyes and heart reacts, since these are now exclusive to desktop and mobile respectively).
 
+`base_size` - this sets the default size of all nodes, which may be adjusted if `adjust_node_size` is enabled.
+
+`adjust_node_size` - if enabled, this will adjust the size of nodes, on a logarithmic scale, such that people who've posted more messages in the chat are represented by larger nodes.
+
 
 ## Issues
 

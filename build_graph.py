@@ -63,7 +63,6 @@ def build_message_frequency(messages: list, people:list) -> dict:
 
     return message_freq
 
-
 def build_react_info(messages: list, people: list, config: dict) -> dict:
     react_matrix: dict = {}
 
