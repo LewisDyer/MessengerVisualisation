@@ -9,6 +9,8 @@ import networkx as nx
 import itertools
 from pyvis.network import Network
 import yaml
+from math import exp, log10
+
 
 def load_messages(filename: str) -> dict:
     with open(filename) as json_file:
@@ -41,7 +43,6 @@ def merge_files(file_list: list) -> Tuple[list, list]:
     for chat in file_list:
 
         for message in chat['messages']:
-
             messages.append(message)
 
         for person in chat['participants']: 
@@ -51,6 +52,17 @@ def merge_files(file_list: list) -> Tuple[list, list]:
     people = sorted(set(people)) # remove duplicates
 
     return (messages, people)
+
+def build_message_frequency(messages: list, people:list) -> dict:
+
+    message_freq = {person:0 for person in people}
+
+    for message in messages:
+        if message['sender_name'] in people:
+            message_freq[message['sender_name']] += 1
+
+    return message_freq
+
 
 def build_react_info(messages: list, people: list, config: dict) -> dict:
     react_matrix: dict = {}
@@ -88,7 +100,7 @@ def make_edge(person1: str, person2: str, reacts: dict, directed: bool, threshol
     if pair_reactions > threshold:
         graph.add_edge(person1, person2)
 
-def create_graph(messages: list, people: list, reacts: dict, config: dict):
+def create_graph(messages: list, people: list, reacts: dict, freq:dict, config: dict):
 
     directed = config['graph']['directed']
 
@@ -111,10 +123,8 @@ def create_graph(messages: list, people: list, reacts: dict, config: dict):
     vis.from_nx(reacts_g)
 
     neighs = vis.get_adj_list()
-    print(neighs)
     for edge in vis.edges:
         edge["value"] = get_pair_reacts(edge["from"], edge["to"], reacts, directed)
-        print(edge)
 
     for node in vis.nodes:
         neighbors = vis.neighbors(node['id'])
@@ -124,6 +134,10 @@ def create_graph(messages: list, people: list, reacts: dict, config: dict):
             matching_edge = [edge for edge in vis.edges if (edge["from"] in pair and edge["to"] in pair)][0]
             n_metadata.append(f'{neighbor} ({matching_edge["value"]})')
         node['title'] = " Reacts:<br>" + "<br>".join(list(n_metadata))
+        if config['graph']['adjust_node_size']:
+            node['size'] = config['graph']['base_size'] * log10((freq[node['id']]) / 10)
+        else:
+            node['size'] = config['graph']['base_size']
 
     return(vis)
 
@@ -139,8 +153,9 @@ if __name__ == '__main__':
 
     chat_files = load_folder()
     messages, people = merge_files(chat_files)
+    message_freq = build_message_frequency(messages, people)
     react_matrix = build_react_info(messages, people, config)
-    react_graph = create_graph(messages, people, react_matrix, config)
+    react_graph = create_graph(messages, people, react_matrix, message_freq, config)
 
     show_graph(react_graph)
 

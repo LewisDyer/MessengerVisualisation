@@ -1,4 +1,6 @@
 graph:
   directed: no
-  pair_threshold: 0
+  pair_threshold: 20
   react_category: all
+  adjust_node_size: no
+  base_size: 10
