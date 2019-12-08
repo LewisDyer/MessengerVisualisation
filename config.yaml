@@ -1,4 +1,4 @@
 graph:
   directed: no
-  pair_threshold: 5
-  react_category: laugh
+  pair_threshold: 0
+  react_category: all
