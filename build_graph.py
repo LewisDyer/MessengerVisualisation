@@ -8,6 +8,7 @@ from collections import defaultdict
 import networkx as nx
 import itertools
 from pyvis.network import Network
+import yaml
 
 def load_messages(filename: str) -> dict:
     with open(filename) as json_file:
@@ -67,28 +68,44 @@ def build_react_info(messages: list, people: list) -> dict:
     
     return(react_matrix)
 
+def get_pair_reacts(person1: str, person2: str, reacts: dict, directed: bool) -> int:
 
-def get_pair_reacts(person1: str, person2: str, reacts: dict):
+    if directed:
+        return (reacts[person1][person2])
+    else:
+        return(reacts[person1][person2] + reacts[person2][person1])
 
-    return(reacts[person1][person2] + reacts[person2][person1])
+def make_edge(person1: str, person2: str, reacts: dict, directed: bool, threshold: int, graph):
+    pair_reactions = get_pair_reacts(person1, person2, reacts, directed)
+    if pair_reactions > threshold:
+        graph.add_edge(person1, person2)
 
-def create_graph(messages: list, people: list, reacts: dict):
-    reacts_g = nx.Graph()
+def create_graph(messages: list, people: list, reacts: dict, config: dict):
+
+    directed = config['graph']['directed']
+
+    if directed:
+        reacts_g = nx.DiGraph()
+    else:
+        reacts_g = nx.Graph()
     reacts_g.add_nodes_from(people)
 
+
+    threshold = config['graph']['pair_threshold']
+
     for pair in itertools.combinations(people, 2):
-        pair_reactions = get_pair_reacts(pair[0], pair[1], reacts)
-        if pair_reactions != 0:
-            reacts_g.add_edge(pair[0], pair[1])
+        make_edge(pair[0], pair[1], reacts, directed, threshold, reacts_g)
+        if directed:
+            make_edge(pair[1], pair[0], reacts, directed, threshold, reacts_g)
         
-    vis = Network(bgcolor='#222222', font_color="white")
+    vis = Network(bgcolor='#222222', font_color="white", height="100%", width="100%", directed=directed)
 
     vis.from_nx(reacts_g)
 
     neighs = vis.get_adj_list()
     print(neighs)
     for edge in vis.edges:
-        edge["value"] = get_pair_reacts(edge["from"], edge["to"], reacts)
+        edge["value"] = get_pair_reacts(edge["from"], edge["to"], reacts, directed)
         print(edge)
 
     for node in vis.nodes:
@@ -102,19 +119,20 @@ def create_graph(messages: list, people: list, reacts: dict):
 
     return(vis)
 
-
-
-
 def show_graph(vis):
     
     vis.repulsion()
     vis.show('graph.html')
 
 if __name__ == '__main__':
+
+    with open("config.yaml", "r") as yml:
+        config = yaml.load(yml)
+
     chat_files = load_folder()
     messages, people = merge_files(chat_files)
     react_matrix = build_react_info(messages, people)
-    react_graph = create_graph(messages, people, react_matrix)
+    react_graph = create_graph(messages, people, react_matrix, config)
 
     show_graph(react_graph)
 
