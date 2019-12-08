@@ -21,6 +21,16 @@ You can obtain information from any Messenger chats you're part of, directly fro
 2. Install Pyviz, which is used to output the final graphs as an HTML file. Install it using `pip install pyviz`.
 3. If you're not using Anaconda, you may also need to `pip install networkx`, which actually stores the underlying graphs. (All the other libraries should come standard with Python).
 
+## Settings
+
+Various settings are provided in `config.yaml` to change, which are described here:
+
+`directed` - if this is `yes`, a directed graph will be given. Otherwise an undirected graph is produced.
+`pair_threshold` - an edge between two people will only appear in the graph if the number of reacts between them is *above* this value. Setting this number very low can lead to very large, messy graphs for large group chats.
+`react_category` - when outputting the graph, only reaction types that are included in this category will be considered. React categories are described in `react-info.json`, and can be modified or added to accordingly (for instance, setting `react_category: love` will combined heart eyes and heart reacts, since these are now exclusive to desktop and mobile respectively).
+
+
 ## Issues
 
 If you're having any issues running the program, or want to suggest any new features/additions, feel free to stick in an issue. I'll mainly be working on this during the winter vacation (around mid-December to mid-January), though I may continue it on a more irregular basis if I end up enjoying it enough.
+

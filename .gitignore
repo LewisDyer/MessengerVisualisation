@@ -136,3 +136,6 @@ messages/
 
 # HTML outputs
 *.html
+
+# config file
+config.yaml
