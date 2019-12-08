@@ -1,3 +1,4 @@
 graph:
-  directed: yes
-  pair_threshold: 25
+  directed: no
+  pair_threshold: 5
+  react_category: laugh

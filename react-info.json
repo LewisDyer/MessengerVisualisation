@@ -1,0 +1,30 @@
+{
+    "names": {
+        "\u00f0\u009f\u0091\u008d": "Thumbs up",
+        "\u00f0\u009f\u0098\u008d": "Heart eyes",
+        "\u00f0\u009f\u0098\u00a2": "Sad",
+        "\u00f0\u009f\u0098\u0086": "Laugh",
+        "\u00f0\u009f\u0098\u00ae": "Wow",
+        "\u00e2\u009d\u00a4": "Heart",
+        "\u00f0\u009f\u0091\u008e": "Thumbs down",
+        "\u00f0\u009f\u0098\u00a0": "Angry"   
+    },
+    
+    "categories": {
+        "all": ["Thumbs up", "Heart eyes", "Wow", "Heart", "Thumbs down", "Angry"],
+        "thumbs up": ["Thumbs up"],
+        "heart eyes": ["Heart eyes"],
+        "sad": ["Sad"],
+        "laugh": ["Wow"],
+        "heart": ["Heart"],
+        "thumbs down": ["Thumbs down"],
+        "angry": ["Angry"],
+
+        "positive": ["Thumbs up", "Heart eyes", "Laugh", "Wow", "Heart"],
+        "negative": ["Sad", "Thumbs down", "Angry"],
+
+        "disapproving": ["Thumbs down", "Angry"],
+
+        "love": ["Heart eyes", "Laugh"]
+    }
+}

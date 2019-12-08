@@ -52,9 +52,16 @@ def merge_files(file_list: list) -> Tuple[list, list]:
 
     return (messages, people)
 
-def build_react_info(messages: list, people: list) -> dict:
+def build_react_info(messages: list, people: list, config: dict) -> dict:
     react_matrix: dict = {}
-    
+
+    with open('react-info.json', 'r') as react_file:
+        react_info = json.load(react_file)
+
+    react_map = react_info['names']
+    category = config['graph']['react_category']
+    filter_reacts = react_info['categories'][category]
+
     for person in people:
         react_matrix[person] = defaultdict(int)
 
@@ -64,7 +71,8 @@ def build_react_info(messages: list, people: list) -> dict:
             if 'reactions' in message:
                 for reaction in message['reactions']:
                     if reaction['actor'] in people:
-                        react_matrix[author][reaction['actor']] += 1
+                        if react_map[reaction['reaction']] in filter_reacts:
+                            react_matrix[author][reaction['actor']] += 1
     
     return(react_matrix)
 
@@ -131,7 +139,7 @@ if __name__ == '__main__':
 
     chat_files = load_folder()
     messages, people = merge_files(chat_files)
-    react_matrix = build_react_info(messages, people)
+    react_matrix = build_react_info(messages, people, config)
     react_graph = create_graph(messages, people, react_matrix, config)
 
     show_graph(react_graph)
